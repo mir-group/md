@@ -1,8 +1,6 @@
 from struc import Structure
 import numpy as np
 import time
-import datetime
-import concurrent.futures
 import md
 import output
 
