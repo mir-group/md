@@ -8,7 +8,7 @@ import output
 
 
 class MD:
-    """Generates NVE dynamics from a GP model."""
+    """Generates NVE dynamics from a general force model."""
 
     def __init__(self, force_model, dt: float, number_of_steps: int,
                  pos_init: np.ndarray, species, cell, masses,
