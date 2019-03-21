@@ -9,7 +9,7 @@ class MD:
     """Generates NVE dynamics from a general force model."""
 
     def __init__(self, force_model, initial_structure, dt: float,
-                 number_of_steps: int, output_name='otf_run.out',
+                 number_of_steps: int, output_name='md_run.out',
                  force_args=[]):
 
         # force model should take a structure object as input and update the
