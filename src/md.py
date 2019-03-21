@@ -8,43 +8,42 @@ import output
 class MD:
     """Generates NVE dynamics from a general force model."""
 
-    def __init__(self, force_model, dt: float, number_of_steps: int,
-                 pos_init: np.ndarray, species, cell, masses,
-                 prev_pos_init: np.ndarray=None, skip: int=0,
-                 output_name='otf_run.out'):
+    def __init__(self, force_model, initial_structure, dt: float,
+                 number_of_steps: int, output_name='otf_run.out',
+                 force_args=[]):
 
+        # force model should take a structure object as input and update the
+        # forces atribute of the structure object. if the force model takes
+        # some other parameters as input, you can put them in the force args
+        # attribute.
+        self.force_model = force_model
+        self.force_args = force_args
+        self.structure = initial_structure
         self.dt = dt
         self.Nsteps = number_of_steps
-        self.force_model = force_model
-
-        self.structure = Structure(cell=cell, species=species,
-                                   positions=pos_init,
-                                   mass_dict=masses,
-                                   prev_positions=prev_pos_init)
-
         self.noa = self.structure.positions.shape[0]
-        self.atom_list = list(range(self.noa))
         self.curr_step = 0
         self.kes = []
         self.output_name = output_name
 
     def run(self):
         self.start_time = time.time()
+        output.write_header(self.structure, self.output_name)
 
         while self.curr_step < self.Nsteps:
             # verlet algorithm follows Frenkel p. 70
-            self.force_model(self.structure)  # update forces
+            self.force_model(self.structure, *self.force_args)
             self.update_positions()
             self.record_state()
             self.curr_step += 1
 
-        output.conclude_run(self)
+        output.conclude_run(self.output_name)
 
     def update_positions(self):
         dtdt = self.dt ** 2
         new_pos = np.zeros((self.noa, 3))
 
-        # update positions
+        # compute new positions
         for i, pre_pos in enumerate(self.structure.prev_positions):
             mass = self.structure.mass_dict[self.structure.species[i]]
             pos = self.structure.positions[i]
@@ -58,6 +57,7 @@ class MD:
         self.temperature = temperature
         self.velocities = velocities
 
+        # update positions
         self.structure.prev_positions = self.structure.positions
         self.structure.positions = new_pos
         self.structure.wrap_positions()

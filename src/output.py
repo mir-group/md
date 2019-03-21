@@ -9,8 +9,7 @@ def write_to_output(string: str, output_file: str = 'otf_run.out'):
         f.write(string)
 
 
-def write_header(cutoffs, structure, output_name, std_tolerance):
-
+def write_header(structure, output_name):
     with open(output_name, 'w') as f:
         f.write(str(datetime.datetime.now()) + '\n')
 
@@ -30,13 +29,12 @@ def write_header(cutoffs, structure, output_name, std_tolerance):
 def write_md_config(dt, curr_step, structure, temperature, KE,
                     start_time, output_name, velocities):
     string = ''
-    string += "\n*-Frame: " + str(curr_step)
+    string += "\n-Frame: " + str(curr_step)
     string += '\nSimulation Time: %.3f ps \n' % (dt * curr_step)
 
     # Construct Header line
     string += 'El \t\t\t  Position (A) \t\t\t\t\t '
     string += 'Force (ev/A) '
-    string += '\t\t\t\t\t\t Std. Dev (ev/A) \t'
     string += '\t\t\t\t\t\t Velocities (A/ps) \n'
 
     # Construct atom-by-atom description
@@ -47,9 +45,6 @@ def write_md_config(dt, curr_step, structure, temperature, KE,
         string += '\t'
         for j in range(3):
             string += str("%.8f" % structure.forces[i][j]) + ' '
-        string += '\t'
-        for j in range(3):
-            string += str("%.8e" % structure.stds[i][j]) + ' '
         string += '\t'
         for j in range(3):
             string += str("%.8e" % velocities[i][j]) + ' '
@@ -66,7 +61,7 @@ def write_md_config(dt, curr_step, structure, temperature, KE,
 
 
 def conclude_run(output_name):
-    footer = '▬' * 20 + '\n'
+    footer = '-' * 20 + '\n'
     footer += 'Run complete. \n'
 
     write_to_output(footer, output_name)

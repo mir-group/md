@@ -2,16 +2,15 @@ import numpy as np
 from typing import List
 
 
-class Structure(object):
+class Structure:
     """
         Contains positions, species, cell, cutoff rad, previous positions,
-        forces, and stds of forces, computes inv_cell and bond list
+        forces, forces, computes inv_cell and bond list
 
         :param cell: nparray, 3x3 Bravais cell
         :param species: list[str], List of elements
         :param positions: list[nparray] list of positions
         :param cutoff: float, Cutoff radius for GP
-
     """
 
     def __init__(self, cell: np.ndarray, species: List[str],
@@ -50,7 +49,6 @@ class Structure(object):
             self.prev_positions = prev_positions
 
         self.forces = np.zeros((len(positions), 3))
-        self.stds = np.zeros((len(positions), 3))
         self.mass_dict = mass_dict
 
     @staticmethod
@@ -103,6 +101,3 @@ class Structure(object):
                                         self.cell_dot)
 
         self.wrapped_positions = pos_wrap
-
-if __name__ == '__main__':
-    pass
