@@ -10,7 +10,7 @@ class MD:
 
     def __init__(self, force_model, initial_structure, dt: float,
                  number_of_steps: int, output_name='md_run.out',
-                 force_args=[]):
+                 force_args=[], initial_velocities=None):
 
         # force model should take a structure object as input and update the
         # forces atribute of the structure object. if the force model takes
@@ -25,6 +25,11 @@ class MD:
         self.curr_step = 0
         self.kes = []
         self.output_name = output_name
+
+        # if initial velocities are given, overwrite previous positions
+        if initial_velocities is not None:
+            self.structure.prev_positions = \
+                self.structure.positions - initial_velocities * self.dt
 
     def run(self):
         self.start_time = time.time()
