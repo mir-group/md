@@ -31,7 +31,7 @@ cutoffs = np.array([5])
 epsilon = 1
 sigma = 2
 force_args = (cutoffs, epsilon, sigma)
-dt = 0.01
+dt = 0.001
 number_of_steps = 1000
 
 md_object = md.MD(lj_force_on_structure, structure, dt, number_of_steps,

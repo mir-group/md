@@ -4,13 +4,13 @@ from typing import List
 
 class Structure:
     """
-        Contains positions, species, cell, cutoff rad, previous positions,
-        forces, forces, computes inv_cell and bond list
+        Contains the atomic coordinates in angstrom (both folded and unfolded),
+        periodic cell in angstrom, atomic species, and atomic masses in
+        special MD units (see conversions.nb for details on unit conversion).
 
-        :param cell: nparray, 3x3 Bravais cell
-        :param species: list[str], List of elements
-        :param positions: list[nparray] list of positions
-        :param cutoff: float, Cutoff radius for GP
+        When creating a structure object, atomic coordinates should be given
+        in angstrom and masses should be given in atomic mass units
+        (1 amu \approx 1.66e-27 kg).
     """
 
     def __init__(self, cell: np.ndarray, species: List[str],
@@ -49,7 +49,13 @@ class Structure:
             self.prev_positions = prev_positions
 
         self.forces = np.zeros((len(positions), 3))
-        self.mass_dict = mass_dict
+
+        # convert masses from amu to md units
+        converted_mass_dict = {}
+        conversion_factor = 0.000103642695727  # see conversions.nb
+        for spec in mass_dict:
+            converted_mass_dict[spec] = mass_dict[spec] * conversion_factor
+        self.mass_dict = converted_mass_dict
 
     @staticmethod
     def get_unique_species(species):
