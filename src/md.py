@@ -92,3 +92,6 @@ class MD:
         temperature = 2 * KE / (3 * self.noa * kb)
 
         return KE, temperature, velocities
+
+    def thermostat(self):
+        pass
